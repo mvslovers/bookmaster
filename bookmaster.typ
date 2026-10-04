@@ -202,7 +202,7 @@
     let chap = if chapters.len() > 0 {
       let h = chapters.last()
       if h.numbering != none {
-        [Chapter #counter(heading).at(h.location()).first(). #h.body]
+        [#numbering(h.numbering, ..counter(heading).at(h.location()))#h.body]
       } else { h.body }
     } else { [] }
     set text(font: head-font, size: 8.5pt)
@@ -289,8 +289,9 @@
       link(el.location())[#el.supplement #n#on]
     } else if el.func() == heading {
       if el.level == 1 and el.numbering != none {
-        let n = counter(heading).at(el.location()).first()
-        link(el.location())[Chapter #n, “#el.body”#on]
+        // "Chapter 3" or "Appendix A": the heading's own number, less ". ".
+        let n = numbering(el.numbering, ..counter(heading).at(el.location())).trim(". ", at: end)
+        link(el.location())[#n, “#el.body”#on]
       } else {
         link(el.location())[“#el.body”#on]
       }
@@ -341,9 +342,18 @@
   set page(numbering: "1")
 }
 
-#let contents() = {
+#let contents(depth: 3) = {
   heading(numbering: none, outlined: false)[Contents]
-  outline(title: none, depth: 3, indent: n => (0em, 6.2em, 7.4em).at(calc.min(n, 2)), target: heading.where(outlined: true))
+  outline(title: none, depth: depth, indent: n => (0em, 6.2em, 7.4em).at(calc.min(n, 2)), target: heading.where(outlined: true))
+}
+
+// The appendices: #show: appendices before the first one numbers the
+// chapters that follow "Appendix A.", "Appendix B." ...
+#let appendices(body) = {
+  counter(heading).update(0)
+  set heading(numbering: (..n) => if n.pos().len() == 1 {
+    "Appendix " + numbering("A", n.pos().first()) + ". " })
+  body
 }
 
 #let figures() = {

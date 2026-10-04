@@ -83,6 +83,8 @@ Add this repository as a submodule beside the book sources, for example
 | `deflist(...)` | a two-column definition list |
 | `note[...]` | a run-in **Note:** |
 | `idx("term")`, `idx("term", "subterm")` | an index entry for the current page |
+| `#show: appendices` | the chapters after it are numbered "Appendix A.", "Appendix B." ... |
+| `contents(depth: 2)` | a shallower table of contents (default 3), for a reference with many entries |
 | `@label` | "Figure 3 on page 5", "“Section” on page 5", "Chapter 2, “Title”" -- the page is left out when the target is on the same page |
 
 ### Syntax diagrams
