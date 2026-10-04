@@ -267,8 +267,9 @@
   })
   // A table may run onto the next page; a long one would otherwise leave
   // half a page empty.
+  show figure.where(kind: table): set block(breakable: true)
   show figure.where(kind: table): it => block(above: 1.4em, below: 1.4em, breakable: true, {
-    block(sticky: true, align(left, it.caption))
+    block(sticky: true, width: 100%, align(left, it.caption))
     v(0.3em)
     it.body
   })
