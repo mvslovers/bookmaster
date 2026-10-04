@@ -14,9 +14,9 @@
 // ---------------------------------------------------------------- inline ---
 
 // A command, keyword or option as it is typed: bold monospace.
-#let cmd(x) = text(font: mono-font, weight: "bold", size: 0.88em, x)
+#let cmd(x) = text(font: mono-font, weight: "bold", size: 0.88em, hyphenate: false, x)
 // A variable the reader supplies: italic monospace.
-#let var(x) = text(font: mono-font, style: "italic", size: 0.88em, x)
+#let var(x) = text(font: mono-font, style: "italic", size: 0.88em, hyphenate: false, x)
 
 // ----------------------------------------------------------------- index ---
 
@@ -220,7 +220,7 @@
   )
 
   // Raw text: monospace, a little smaller than the body.
-  show raw: set text(font: mono-font, size: 0.85em)
+  show raw: set text(font: mono-font, size: 0.85em, hyphenate: false)
   show raw.where(block: true): it => block(
     width: 100%, inset: (left: 1.2em, y: 0.2em), { set par(justify: false); it })
 
