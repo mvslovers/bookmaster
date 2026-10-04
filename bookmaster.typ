@@ -14,9 +14,10 @@
 // ---------------------------------------------------------------- inline ---
 
 // A command, keyword or option as it is typed: bold monospace.
-#let cmd(x) = text(font: mono-font, weight: "bold", size: 0.88em, hyphenate: false, x)
+// Both are boxed: a line must not break after the "--" of a long option.
+#let cmd(x) = box(text(font: mono-font, weight: "bold", size: 0.88em, hyphenate: false, x))
 // A variable the reader supplies: italic monospace.
-#let var(x) = text(font: mono-font, style: "italic", size: 0.88em, hyphenate: false, x)
+#let var(x) = box(text(font: mono-font, style: "italic", size: 0.88em, hyphenate: false, x))
 
 // ----------------------------------------------------------------- index ---
 
