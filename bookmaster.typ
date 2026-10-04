@@ -342,7 +342,7 @@
 
 #let contents() = {
   heading(numbering: none, outlined: false)[Contents]
-  outline(title: none, depth: 3, target: heading.where(outlined: true))
+  outline(title: none, depth: 3, indent: n => (0em, 6.2em, 7.4em).at(calc.min(n, 2)), target: heading.where(outlined: true))
 }
 
 #let figures() = {
