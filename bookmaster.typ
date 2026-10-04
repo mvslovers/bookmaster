@@ -89,13 +89,13 @@
 
 // A program source or listing: monospace, nothing reflowed, optionally with
 // line numbers in a column of their own.
-#let code(src, numbers: false, size: 8pt) = {
+#let code(src, numbers: false, start: 1, size: 8pt) = {
   set par(justify: false, leading: 0.42em, spacing: 0.42em)
   set text(font: mono-font, size: size)
   let lines = src.trim("\n", at: end).split("\n")
   if numbers {
     grid(columns: (2.6em, auto), column-gutter: 1em, row-gutter: 0.42em,
-      ..lines.enumerate().map(((i, l)) => (align(right, str(i + 1)), l)).flatten())
+      ..lines.enumerate().map(((i, l)) => (align(right, str(i + start)), l)).flatten())
   } else {
     lines.join(linebreak())
   }
@@ -256,7 +256,10 @@
 
   // Figures: a rule above and below, caption under it; tables carry theirs on top.
   set figure(gap: 0.7em)
-  show figure.where(kind: "fig"): it => block(above: 1.4em, below: 1.4em, breakable: false, {
+  // A figure may run onto the next page, as a long listing must; the
+  // caption stays with its closing rule.
+  show figure.where(kind: "fig"): set block(breakable: true)
+  show figure.where(kind: "fig"): it => block(above: 1.4em, below: 1.4em, breakable: true, {
     line(length: 100%, stroke: 0.6pt)
     v(0.4em)
     align(left, it.body)
@@ -278,6 +281,7 @@
     top: if y == 0 { 1.2pt } else if y == 1 { 0.9pt } else { 0.4pt },
     bottom: 1.2pt, left: none, right: none))
   show table.cell.where(y: 0): set text(font: head-font, weight: "bold", size: 9pt)
+  show table: set par(justify: false)
   set table(inset: (x: 6pt, y: 5pt), align: left)
 
   // Cross-references in the BookMaster form.
