@@ -104,6 +104,78 @@ ruled lines on a character grid, so the joints meet whatever the font:
 files of their own and run `tools/check-syntax.py` over them -- a joint one
 column off is easy to write and hard to see in the source.
 
+## The web form (experimental)
+
+The same sources also give HTML, for Read the Docs or any static host. Every
+element of the template has a second, semantic form for the web -- headings
+as `<h2>`..`<h4>`, figures as `<figure>`, definition lists as `<dl>`, code
+and screens as `<pre>`, syntax diagrams as inline SVG, the index linking to
+sections instead of pages -- chosen by `target()`. The PDF form is
+untouched: all four ML01 books and the sample produce byte-identical PDFs
+with and without it (`--creation-timestamp 0`, `cmp`).
+
+Both rest on typst features that are still marked experimental, so pin the
+typst version, as the PDF build already does.
+
+**One HTML file per book** -- no change to the book needed:
+
+```sh
+typst compile --features html --format html --root . --font-path bookmaster/fonts ml01-0003.typ ml01-0003.html
+```
+
+**A web site, one page per part.** Wrap the front matter and each chapter
+in `part()`, and put `titlepage()` where the web site shows the title and
+the edition notice. Both pass their body through unchanged in the PDF.
+
+```typst
+#part("index.html", title: [libc370 Programmer's Guide])[
+#titlepage()
+#contents()
+#figures()
+...About This Book...
+#mainmatter()
+]
+#set page(numbering: "1")
+
+#part("pg-intro.html", include "guide/pg-intro.typ")
+#part("pg-startup.html", include "guide/pg-startup.typ")
+...
+#part("index-terms.html", title: [Index])[
+#heading(numbering: none)[Index]
+#make-index()
+]
+```
+
+```sh
+typst compile --features html,bundle --format bundle --input bm-bundle=1 \
+    --root . --font-path bookmaster/fonts ml01-0003.typ site/
+```
+
+Every page carries the stylesheet and a bar linking the title page and the
+index. Cross-references between pages resolve (measured on ML01-0003:
+17 pages, 810 links, none broken). In a bundle, nothing but `part()`s may
+stand at the top level of the book.
+
+**Read the Docs** builds a static site with custom commands (not tried yet):
+
+```yaml
+# .readthedocs.yaml
+version: 2
+submodules:
+  include: all
+build:
+  os: ubuntu-24.04
+  commands:
+    - curl --proto =https -fsSL -o typst.tar.xz https://github.com/typst/typst/releases/download/v0.15.1/typst-x86_64-unknown-linux-musl.tar.xz
+    - echo "<sha256>  typst.tar.xz" | sha256sum -c -
+    - tar -xf typst.tar.xz
+    - cd docs/books && ../../typst-x86_64-unknown-linux-musl/typst compile --features html,bundle --format bundle --input bm-bundle=1 --root . --font-path bookmaster/fonts ml01-0003.typ $READTHEDOCS_OUTPUT/html
+```
+
+Open points: a page of syntax diagrams is large (the 32 diagrams of ML01-0002
+make 2.9 MB of SVG in one file); two books on one Read the Docs project need
+a landing page; previous/next links are not there yet.
+
 ## Document numbers
 
 `ML` (mvslovers), a two-digit area, a four-digit serial, and the edition:

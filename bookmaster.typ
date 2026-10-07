@@ -8,6 +8,24 @@
 // IBM Plex (SIL Open Font License), shipped in fonts/ and passed with
 // --font-path, so a build on any host sets the same pages.
 #let body-font = ("IBM Plex Serif",)
+// HTML export (typst --features html, or bundle): every element below has a
+// second, semantic form for the web, chosen by target(); the PDF form is the
+// unchanged first branch.
+#let _web() = target() == "html"
+// A web site, one page per part: typst compile --features html,bundle
+// --format bundle --input bm-bundle=1.  Decided without context, because in
+// a bundle nothing but documents may stand at the top level.
+#let _bundle = "bm-bundle" in sys.inputs
+
+// part(file, body): one page of the web site; in the PDF and in a single
+// HTML file the body as it is.
+#let part(file, title: none, body) = if _bundle {
+  document(file, title: title, [#metadata("bm-style") <bm-style> #body])
+} else { body }
+
+// titlepage(): where the web site shows the title and the edition notice --
+// the first part.  The PDF sets them on pages of their own and ignores this.
+#let titlepage() = [#metadata("bm-titlepage") <bm-titlepage>]
 #let head-font = ("IBM Plex Sans",)
 #let mono-font = ("IBM Plex Mono",)
 
@@ -15,16 +33,39 @@
 
 // A command, keyword or option as it is typed: bold monospace.
 // Both are boxed: a line must not break after the "--" of a long option.
-#let cmd(x) = box(text(font: mono-font, weight: "bold", size: 0.88em, hyphenate: false, x))
+#let cmd(x) = context if _web() { html.elem("code", attrs: (class: "cmd"), x) } else {
+  box(text(font: mono-font, weight: "bold", size: 0.88em, hyphenate: false, x)) }
 // A variable the reader supplies: italic monospace.
-#let var(x) = box(text(font: mono-font, style: "italic", size: 0.88em, hyphenate: false, x))
+#let var(x) = context if _web() { html.elem("var", x) } else {
+  box(text(font: mono-font, style: "italic", size: 0.88em, hyphenate: false, x)) }
 
 // ----------------------------------------------------------------- index ---
 
 // idx("term") or idx("term", "subterm"): marks the current page for the index.
 #let idx(..t) = [#metadata(t.pos()) <bm-idx>]
 
-#let make-index() = context {
+#let _web-index() = context {
+  let marks = query(<bm-idx>)
+  let entries = (:)
+  for m in marks {
+    let key = m.value.join("\u{1F}")
+    let hs = query(selector(heading).before(m.location()))
+    let sec = if hs.len() > 0 { hs.last() } else { none }
+    let have = entries.at(key, default: (terms: m.value, secs: ()))
+    if sec != none and sec.location() not in have.secs.map(h => h.location()) { have.secs.push(sec) }
+    entries.insert(key, have)
+  }
+  let keys = entries.keys().sorted(key: k => lower(k))
+  html.elem("dl", attrs: (class: "index"), {
+    for k in keys {
+      let e = entries.at(k)
+      html.elem("dt", e.terms.join(", "))
+      html.elem("dd", e.secs.map(h => link(h.location(), h.body)).join([; ]))
+    }
+  })
+}
+
+#let make-index() = [#metadata("bm-index") <bm-index>] + context if _web() { _web-index() } else {
   let marks = query(<bm-idx>)
   let entries = (:)
   for m in marks {
@@ -69,11 +110,20 @@
 // -------------------------------------------------------------- elements ---
 
 // A note in the BookMaster form: "Note:" in bold, run in.
-#let note(body) = block(above: 1em, below: 1em)[*Note:* #body]
+#let note(body) = context if _web() { html.elem("div", attrs: (class: "note"))[*Note:* #body] } else {
+  block(above: 1em, below: 1em)[*Note:* #body] }
 
 // A definition list: the term in a hanging column, bold monospace by default.
-#let deflist(width: 1.25in, ..items) = {
+#let deflist(width: 1.25in, ..items) = context {
   let pairs = items.pos()
+  if _web() {
+    return html.elem("dl", {
+      for i in range(0, pairs.len(), step: 2) {
+        html.elem("dt", pairs.at(i))
+        if i + 1 < pairs.len() { html.elem("dd", pairs.at(i + 1)) }
+      }
+    })
+  }
   grid(
     columns: (width, 1fr),
     column-gutter: 0.15in,
@@ -83,13 +133,25 @@
 }
 
 // A framed screen or session: a light box, monospace, nothing reflowed.
-#let screen(body) = block(
+#let screen(body) = context if _web() {
+  html.elem("pre", attrs: (class: "screen"), body) } else { block(
   width: 100%, inset: (x: 10pt, y: 8pt), radius: 3pt, stroke: 0.6pt,
-  { set par(justify: false); text(font: mono-font, size: 8pt, body) })
+  { set par(justify: false); text(font: mono-font, size: 8pt, body) }) }
 
 // A program source or listing: monospace, nothing reflowed, optionally with
 // line numbers in a column of their own.
-#let code(src, numbers: false, start: 1, size: 8pt) = {
+#let code(src, numbers: false, start: 1, size: 8pt) = context {
+  if _web() {
+    let lines = src.trim("\n", at: end).split("\n")
+    let w = str(lines.len() + start - 1).len()
+    let t = if numbers {
+      lines.enumerate().map(((i, l)) => {
+        let n = str(i + start)
+        " " * (w - n.len()) + n + "  " + l
+      }).join("\n")
+    } else { lines.join("\n") }
+    return html.elem("pre", attrs: (class: "code"), t)
+  }
   set par(justify: false, leading: 0.42em, spacing: 0.42em)
   set text(font: mono-font, size: size)
   let lines = src.trim("\n", at: end).split("\n")
@@ -112,7 +174,7 @@
   "┬": (l: true, r: true, d: true), "┴": (l: true, r: true, u: true),
   "┼": (l: true, r: true, u: true, d: true),
 )
-#let syntax(title: none, size: 8pt, framed: true, src) = {
+#let syntax(title: none, size: 8pt, framed: true, src) = context {
   let cw = size * 0.6
   let rh = size * 1.55
   let lw = 0.55pt
@@ -167,7 +229,14 @@
       }
     }
   })
-  if not framed { return box(baseline: rows.len() * rh * 0.32, { set text(font: mono-font); grid-box }) }
+  if not framed { return context if _web() { html.frame({ set text(font: mono-font); grid-box }) } else {
+    box(baseline: rows.len() * rh * 0.32, { set text(font: mono-font); grid-box }) } }
+  if _web() {
+    return html.elem("div", attrs: (class: "syntax"), {
+      if title != none { html.elem("p", attrs: (class: "syntax-title"), strong(title)) }
+      html.frame({ set text(font: mono-font); grid-box })
+    })
+  }
   block(width: 100%, inset: (x: 10pt, y: 9pt), stroke: 0.6pt, breakable: false, {
     set text(font: mono-font)
     if title != none {
@@ -176,6 +245,27 @@
     grid-box
   })
 }
+
+// The stylesheet of the web form: the BookMaster look, approximately.
+#let _web-css = "
+body { max-width: 46rem; margin: 2rem auto; padding: 0 1rem; font-family: 'IBM Plex Serif', Georgia, serif; line-height: 1.45; }
+h1, h2, h3, h4, header .title { font-family: 'IBM Plex Sans', Helvetica, sans-serif; font-weight: normal; }
+h2 { border-top: 4px solid black; padding-top: .3rem; margin-top: 3rem; font-size: 1.8rem; }
+h3 { border-top: 1px solid black; padding-top: .2rem; font-weight: bold; }
+h4 { font-weight: bold; }
+code, pre, var { font-family: 'IBM Plex Mono', Menlo, monospace; font-size: .88em; }
+code.cmd { font-weight: bold; }
+pre.screen { border: 1px solid #000; border-radius: 3px; padding: .5rem .7rem; overflow-x: auto; }
+pre.code { overflow-x: auto; }
+figure { margin: 1.4rem 0; border-top: 1px solid #000; border-bottom: 1px solid #000; padding: .4rem 0; }
+figcaption { text-align: center; font-size: .92em; }
+table { border-collapse: collapse; } td, th { padding: 4px 8px; vertical-align: top; text-align: left; border-bottom: 1px solid #bbb; }
+dl { display: grid; grid-template-columns: max-content 1fr; gap: .4rem 1rem; } dt { font-weight: bold; }
+dl.index { display: block; } dl.index dt { font-weight: normal; margin-top: .3rem; } dl.index dd { margin-left: 1.5rem; font-size: .92em; }
+.grid { display: flex; flex-wrap: wrap; gap: 1rem; } .grid > div { flex: 1 1 18rem; min-width: 0; }
+.note { margin: 1rem 0; } .syntax { border: 1px solid #000; padding: .5rem; overflow-x: auto; }
+header.titlepage { text-align: right; margin: 3rem 0; } section.edition { font-size: .9em; border-top: 1px solid #000; }
+"
 
 // ---------------------------------------------------------------- the book --
 
@@ -213,17 +303,20 @@
     }
   }
 
-  set page(
-    paper: "us-letter",
-    margin: (inside: 1in, outside: 1in, top: 0.9in, bottom: 1.05in),
-    footer: folio,
-    footer-descent: 40%,
-  )
+  show: body => if _bundle { body } else { context if _web() { body } else {
+    set page(
+      paper: "us-letter",
+      margin: (inside: 1in, outside: 1in, top: 0.9in, bottom: 1.05in),
+      footer: folio,
+      footer-descent: 40%,
+    )
+    body
+  } }
 
   // Raw text: monospace, a little smaller than the body.
   show raw: set text(font: mono-font, size: 0.85em, hyphenate: false)
-  show raw.where(block: true): it => block(
-    width: 100%, inset: (left: 1.2em, y: 0.2em), { set par(justify: false); it })
+  show raw.where(block: true): it => context if _web() { it } else { block(
+    width: 100%, inset: (left: 1.2em, y: 0.2em), { set par(justify: false); it }) }
 
   set list(indent: 0.4em, body-indent: 0.7em, marker: ([•], [–]))
   set enum(indent: 0.4em, body-indent: 0.7em)
@@ -231,7 +324,7 @@
   // Headings.
   set heading(numbering: (..n) => if n.pos().len() == 1 { "Chapter " + str(n.pos().first()) + ". " })
   show heading: set text(font: head-font, weight: "regular", hyphenate: false)
-  show heading.where(level: 1): it => {
+  show heading.where(level: 1): it => context if _web() { it } else {
     pagebreak(to: "odd", weak: true)
     v(0.55in)
     block(below: 2.2em, {
@@ -244,22 +337,22 @@
       text(font: head-font, size: 22pt, t)
     })
   }
-  show heading.where(level: 2): it => block(above: 2em, below: 1.1em, sticky: true, {
+  show heading.where(level: 2): it => context if _web() { it } else { block(above: 2em, below: 1.1em, sticky: true, {
     line(length: 100%, stroke: 0.6pt)
     v(-0.35em)
     text(size: 15pt, weight: "bold", it.body)
-  })
-  show heading.where(level: 3): it => block(above: 1.6em, below: 0.9em, sticky: true,
-    text(size: 11.5pt, weight: "bold", it.body))
-  show heading.where(level: 4): it => block(above: 1.3em, below: 0.8em, sticky: true,
-    text(font: body-font, size: 10.5pt, weight: "bold", it.body))
+  }) }
+  show heading.where(level: 3): it => context if _web() { it } else { block(above: 1.6em, below: 0.9em, sticky: true,
+    text(size: 11.5pt, weight: "bold", it.body)) }
+  show heading.where(level: 4): it => context if _web() { it } else { block(above: 1.3em, below: 0.8em, sticky: true,
+    text(font: body-font, size: 10.5pt, weight: "bold", it.body)) }
 
   // Figures: a rule above and below, caption under it; tables carry theirs on top.
   set figure(gap: 0.7em)
   // A figure may run onto the next page, as a long listing must; the
   // caption stays with its closing rule.
   show figure.where(kind: "fig"): set block(breakable: true)
-  show figure.where(kind: "fig"): it => block(above: 1.4em, below: 1.4em, breakable: true, {
+  show figure.where(kind: "fig"): it => context if _web() { it } else { block(above: 1.4em, below: 1.4em, breakable: true, {
     line(length: 100%, stroke: 0.6pt)
     v(0.4em)
     align(left, it.body)
@@ -267,15 +360,15 @@
     line(length: 100%, stroke: 0.6pt)
     v(0.2em)
     align(center, it.caption)
-  })
+  }) }
   // A table may run onto the next page; a long one would otherwise leave
   // half a page empty.
   show figure.where(kind: table): set block(breakable: true)
-  show figure.where(kind: table): it => block(above: 1.4em, below: 1.4em, breakable: true, {
+  show figure.where(kind: table): it => context if _web() { it } else { block(above: 1.4em, below: 1.4em, breakable: true, {
     block(sticky: true, width: 100%, align(left, it.caption))
     v(0.3em)
     it.body
-  })
+  }) }
   show figure.caption: it => text(size: 9.5pt)[#it.supplement #context it.counter.display(it.numbering). #it.body]
   set table(stroke: (x, y) => (
     top: if y == 0 { 1.2pt } else if y == 1 { 0.9pt } else { 0.4pt },
@@ -290,7 +383,7 @@
     if el == none { return it }
     let p = counter(page).at(el.location()).first()
     // BookMaster leaves out "on page n" when the target is on this page.
-    let on = if el.location().page() == here().page() { [] } else { [ on page #p] }
+    let on = if _web() or el.location().page() == here().page() { [] } else { [ on page #p] }
     if el.func() == figure {
       let n = el.counter.at(el.location()).first()
       link(el.location())[#el.supplement #n#on]
@@ -306,14 +399,43 @@
   }
 
   // Contents: spaced dot leaders, chapters set off.
+  show outline.entry: it => context if _web() {
+    let el = it.element
+    let t = if el.func() == figure { el.caption.body } else { el.body }
+    link(el.location(), it.indented(it.prefix(), t))
+  } else { it }
+  // A grid has no HTML form: its cells follow one another, side by side
+  // where the stylesheet has room.
+  show grid: it => context if _web() {
+    html.elem("div", attrs: (class: "grid"), it.children.map(c => html.elem("div", c.body)).join())
+  } else { it }
   set outline.entry(fill: box(width: 1fr, repeat(gap: 0.45em)[.]))
-  show outline.entry.where(level: 1): it => {
+  show outline.entry.where(level: 1): it => context if _web() { it } else {
     if it.element.func() == heading { block(above: 1.1em, strong(it)) }
     else { block(above: 0.5em, link(it.element.location(),
       it.indented([#it.element.counter.at(it.element.location()).first().], it.inner(), gap: 0.6em))) }
   }
 
   // ---------------------------------------------------------- title page --
+  let web-title() = {
+    html.elem("header", attrs: (class: "titlepage"), {
+      html.elem("h1", attrs: (class: "title"), [#title #linebreak() #subtitle])
+      html.elem("p", [Document Number #number])
+      html.elem("p", date)
+      html.elem("p", authors.join(", "))
+    })
+    html.elem("section", attrs: (class: "edition"), edition)
+  }
+  // Every page of a web site carries the stylesheet; a single file once.
+  show <bm-titlepage>: it => if _bundle { web-title() } else { none }
+  show <bm-style>: it => {
+    html.elem("style", _web-css)
+    html.elem("nav", attrs: (class: "top"), [#link(<bm-titlepage>)[#short-title] · #link(<bm-index>)[Index]])
+  }
+  if not _bundle { context if _web() {
+    html.elem("style", _web-css)
+    web-title()
+  } else {
   page(footer: none, {
     v(1.4in)
     align(right, {
@@ -336,17 +458,20 @@
     set text(size: 9.5pt)
     edition
   })
+  } }
 
-  counter(page).update(1)
-  set page(numbering: "i")
+  show: body => if _bundle { body } else { context if _web() { body } else {
+    counter(page).update(1)
+    set page(numbering: "i")
+    body
+  } }
   body
 }
 
 // The switch from front matter to the body: arabic folios from 1.
-#let mainmatter() = {
+#let mainmatter() = context if not _web() {
   pagebreak(to: "odd", weak: true)
   counter(page).update(1)
-  set page(numbering: "1")
 }
 
 #let contents(depth: 3) = {
@@ -366,7 +491,7 @@
 #let figures() = {
   heading(numbering: none, outlined: true)[Figures]
   outline(title: none, target: figure.where(kind: "fig"))
-  v(1em)
+  context if not _web() { v(1em) }
   heading(level: 2, numbering: none, outlined: false)[Tables]
   outline(title: none, target: figure.where(kind: table))
 }
