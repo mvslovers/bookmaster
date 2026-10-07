@@ -106,17 +106,25 @@ column off is easy to write and hard to see in the source.
 
 ## Document numbers
 
-`ML` (mvslovers), a two-digit subject area, a four-digit serial, and the
-edition: `ML01-0002-0` is the first edition of book 0002 in area 01.
+`ML` (mvslovers), a two-digit area, a four-digit serial, and the edition:
+`ML01-0002-0` is the Draft of book 0002 in area 01, `ML01-0002-1` its first
+edition.
 
-| Number | Book |
-|---|---|
-| ML01-0001 | cc370 User's Guide |
-| ML01-0002 | cc370 Command Reference |
-| ML01-0003 | libc370 Programmer's Guide |
-| ML01-0004 | libc370 Library Reference |
+**One area per product, assigned up front**, so a number never depends on
+the order in which books get written. Within an area, serial 0001 is the
+guide and 0002 the reference; further volumes count on. A product without a
+row gets an area when its first book starts: add the row here first.
 
-Area 01 is the compiler and its run-time library.
+| Area | Product | Books |
+|---|---|---|
+| ML01 | cc370 and libc370 | ML01-0001 cc370 User's Guide, ML01-0002 cc370 Command Reference, ML01-0003 libc370 Programmer's Guide, ML01-0004 libc370 Library Reference |
+| ML02 | mbt (version 3) | planned |
+| ML03 | BREXX/370 | ML03-0001 User's Guide, ML03-0002 Reference -- in preparation |
+| ML04 | rexx370 | planned |
+| ML05 | ufsd | planned |
+| ML06 | ftpd | planned |
+| ML07 | httpd and its modules | planned; httprexx and httplua from ML07-0003 |
+| ML08 | mvsMF | planned |
 
 ## License
 
