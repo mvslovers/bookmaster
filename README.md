@@ -119,7 +119,7 @@ row gets an area when its first book starts: add the row here first.
 |---|---|---|
 | ML01 | cc370 and libc370 | ML01-0001 cc370 User's Guide, ML01-0002 cc370 Command Reference, ML01-0003 libc370 Programmer's Guide, ML01-0004 libc370 Library Reference |
 | ML02 | mbt (version 3) | planned |
-| ML03 | BREXX/370 | ML03-0001 User's Guide, ML03-0002 Reference -- in preparation |
+| ML03 | BREXX/370 | ML03-0001 User's Guide, ML03-0002 Reference, ML03-0003 Library and Samples -- in preparation |
 | ML04 | rexx370 | planned |
 | ML05 | ufsd | planned |
 | ML06 | ftpd | planned |
