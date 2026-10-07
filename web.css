@@ -11,7 +11,7 @@
 :root { --ink: #161616; --muted: #525252; --line: #c6c6c6; --side: #f4f4f4; --accent: #0f62fe; --top: #161616; }
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--ink); background: #fff; font: 16px/1.55 'IBM Plex Serif', Georgia, serif; }
-body:not(:has(.bm-page)) { max-width: 48rem; margin: 2rem auto; padding: 0 1rem; }
+body:not(:has(.bm-page)):not(.bm-landing) { max-width: 48rem; margin: 2rem auto; padding: 0 1rem; }
 a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
 .bm-top { position: sticky; top: 0; z-index: 2; height: 3rem; display: flex; align-items: center; gap: 1rem; padding: 0 1.25rem; background: var(--top); color: #fff; font-family: 'IBM Plex Sans', sans-serif; }
 .bm-top a { color: #fff; font-weight: bold; } .bm-top .num { color: #a8a8a8; font-size: .85rem; margin-left: auto; }
