@@ -264,6 +264,10 @@
   title: "",
   subtitle: "",
   short-title: "",
+  // The web site's way back: the product whose landing page sits one level
+  // above the book (../index.html), and the site that lists all products.
+  product: "",
+  home: "https://mvslovers.readthedocs.io/",
   number: "",
   date: "",
   authors: (),
@@ -432,7 +436,19 @@
   show <bm-style>: it => {
     html.elem("link", attrs: (rel: "stylesheet", href: "bookmaster.css"))
     html.elem("header", attrs: (class: "bm-top"), {
-      link(<bm-titlepage>, short-title)
+      html.elem("nav", attrs: (class: "bm-crumbs", aria-label: "Breadcrumb"), {
+        if home != "" {
+          html.elem("a", attrs: (href: home), [mvslovers])
+          html.elem("span", attrs: (class: "sep"), [›])
+        }
+        if product != "" {
+          html.elem("a", attrs: (href: "../index.html"), product)
+          html.elem("span", attrs: (class: "sep"), [›])
+          link(<bm-titlepage>, subtitle)
+        } else {
+          link(<bm-titlepage>, short-title)
+        }
+      })
       html.elem("span", attrs: (class: "num"), number)
     })
   }

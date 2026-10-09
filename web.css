@@ -15,6 +15,15 @@ body:not(:has(.bm-page)):not(.bm-landing) { max-width: 48rem; margin: 2rem auto;
 a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
 .bm-top { position: sticky; top: 0; z-index: 2; height: 3rem; display: flex; align-items: center; gap: 1rem; padding: 0 1.25rem; background: var(--top); color: #fff; font-family: 'IBM Plex Sans', sans-serif; }
 .bm-top a { color: #fff; font-weight: bold; } .bm-top .num { color: #a8a8a8; font-size: .85rem; margin-left: auto; }
+.bm-crumbs { display: flex; align-items: center; gap: .55rem; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bm-crumbs a { font-weight: normal; color: #c6c6c6; } .bm-crumbs a:last-child { font-weight: bold; color: #fff; } .bm-crumbs .sep { color: #8d8d8d; }
+/* An anchor (a chapter or section from the contents) stops below the bar on top, not under it. */
+html { scroll-padding-top: 4rem; }
+/* Landing pages: the tiles of one row share their row lines, so a short text beside a long one leaves no ragged edge. */
+.products > .product { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 0; align-content: start; }
+.cards > .card { display: grid; grid-row: span 4; grid-template-rows: subgrid; row-gap: 0; align-content: start; }
+.product > *, .card > * { margin-top: 0; }
+.product .repo a { color: var(--muted); font-weight: normal; }
 .bm-page { display: grid; grid-template-columns: 18rem minmax(0, 1fr); }
 .bm-side { position: sticky; top: 3rem; height: calc(100vh - 3rem); overflow-y: auto; background: var(--side); border-right: 1px solid var(--line); padding: 1.25rem 0; font: 14px/1.4 'IBM Plex Sans', sans-serif; }
 .bm-side ul { list-style: none; margin: 0; padding: 0; } .bm-side li a { display: flex; gap: .3rem; padding: .3rem 1.25rem; color: var(--ink); }
