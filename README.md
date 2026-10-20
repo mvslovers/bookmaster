@@ -194,7 +194,7 @@ row gets an area when its first book starts: add the row here first.
 | ML03 | BREXX/370 (brexx370) | ML03-0001 User's Guide, ML03-0002 Reference, ML03-0003 Library and Samples -- in preparation |
 | ML04 | rexx370, name to come | planned |
 | ML05 | UFSD (ufsd) | planned |
-| ML06 | FTPD (ftpd) | planned |
+| ML06 | FTPD (ftpd) | ML06-0001 User's Guide, ML06-0002 Reference -- in preparation |
 | ML07 | HTTPD (httpd) and its modules | planned; HTTPREXX and HTTPLUA from ML07-0003 |
 | ML08 | mvsMF (mvsmf) | planned |
 
