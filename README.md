@@ -189,14 +189,15 @@ row gets an area when its first book starts: add the row here first.
 
 | Area | Product (repo) | Books |
 |---|---|---|
-| ML01 | CC/370 (cc370) and LIBC/370 (libc370) | ML01-0001 CC/370 User's Guide, ML01-0002 CC/370 Command Reference, ML01-0003 LIBC/370 Programmer's Guide, ML01-0004 LIBC/370 Library Reference |
-| ML02 | MBT (mbt), version 3 | ML02-0001 User's Guide, ML02-0002 Reference |
-| ML03 | BREXX/370 (brexx370) | ML03-0001 User's Guide, ML03-0002 Reference, ML03-0003 Library and Samples -- in preparation |
-| ML04 | rexx370, name to come | planned |
+| ML01 | CC/370 (cc370) and LIBC/370 (libc370) | ML01-0001 CC/370 User's Guide, ML01-0002 CC/370 Command Reference, ML01-0003 LIBC/370 Programmer's Guide, ML01-0004 LIBC/370 Library Reference -- Draft, on `main` |
+| ML02 | MBT (mbt), version 3 | ML02-0001 User's Guide, ML02-0002 Reference -- Draft, on `main` |
+| ML03 | BREXX/370 (brexx370) | ML03-0001 User's Guide, ML03-0002 Reference, ML03-0003 Library and Samples -- Draft, on `master` |
+| ML04 | REKS/370 (rexx370, to be renamed reks370) | planned |
 | ML05 | UFSD (ufsd) | planned |
 | ML06 | FTPD (ftpd) | planned |
 | ML07 | HTTPD (httpd) and its modules | planned; HTTPREXX and HTTPLUA from ML07-0003 |
 | ML08 | mvsMF (mvsmf) | planned |
+| ML09 | OFTPD (oftpd) | planned |
 
 A book title uses the product name; file names, commands and URLs keep the
 repo name.
