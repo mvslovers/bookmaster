@@ -196,7 +196,7 @@ row gets an area when its first book starts: add the row here first.
 | ML05 | UFSD (ufsd) | planned |
 | ML06 | FTPD (ftpd) | ML06-0001 User's Guide, ML06-0002 Reference -- in preparation |
 | ML07 | HTTPD (httpd) and its modules | planned; HTTPREXX and HTTPLUA from ML07-0003 |
-| ML08 | mvsMF (mvsmf) | planned |
+| ML08 | mvsMF (mvsmf) | ML08-0001 User's Guide, ML08-0002 Reference -- in preparation |
 | ML09 | OFTPD (oftpd) | planned |
 | ML10 | PL1C/370 (pl1c370) | ML10-0001 Programmer's Guide, ML10-0002 Language Reference -- in preparation |
 
