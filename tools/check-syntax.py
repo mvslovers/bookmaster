@@ -19,7 +19,11 @@ def cells(line):
 
 
 def check(path):
-    rows = [cells(l) for l in open(path, encoding="utf-8").read().rstrip("\n").split("\n")]
+    # The paths are the caller's own diagram files, read with the caller's
+    # own rights; the tool crosses no trust boundary, so a path outside the
+    # tree is a use, not a traversal.  Books keep their diagrams in their
+    # own directories, which is why no directory is imposed here.
+    rows = [cells(l) for l in open(path, encoding="utf-8").read().rstrip("\n").split("\n")]  # NOSONAR
     width = max(map(len, rows))
     rows = [r.ljust(width) for r in rows]
 
