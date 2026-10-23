@@ -193,11 +193,11 @@ row gets an area when its first book starts: add the row here first.
 | ML02 | MBT (mbt), version 3 | ML02-0001 User's Guide, ML02-0002 Reference -- Draft, on `main` |
 | ML03 | BREXX/370 (brexx370) | ML03-0001 User's Guide, ML03-0002 Reference, ML03-0003 Library and Samples -- Draft, on `master` |
 | ML04 | REKS/370 (rexx370, to be renamed reks370) | planned |
-| ML05 | UFSD (ufsd) | planned |
-| ML06 | FTPD (ftpd) | ML06-0001 User's Guide, ML06-0002 Reference -- in preparation |
+| ML05 | UFSD (ufsd) | ML05-0001 User's Guide, ML05-0002 Reference -- Draft, on `main`, attached to releases from v1.5.0 |
+| ML06 | FTPD (ftpd) | ML06-0001 User's Guide, ML06-0002 Reference -- Draft, on `main`, attached to releases from v1.3.0 |
 | ML07 | HTTPD (httpd) and its modules | planned; HTTPREXX and HTTPLUA from ML07-0003 |
 | ML08 | mvsMF (mvsmf) | ML08-0001 User's Guide, ML08-0002 Reference -- in preparation |
-| ML09 | OFTPD (oftpd) | planned |
+| ML09 | OFTPD (oftpd) | ML09-0001 User's Guide, ML09-0002 Reference -- Draft, on `main` |
 | ML10 | PL1C/370 (pl1c370) | ML10-0001 Programmer's Guide, ML10-0002 Language Reference -- in preparation |
 
 A book title uses the product name; file names, commands and URLs keep the
