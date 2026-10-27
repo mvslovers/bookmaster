@@ -197,7 +197,7 @@ row gets an area when its first book starts: add the row here first.
 | ML06 | FTPD (ftpd) | ML06-0001 User's Guide, ML06-0002 Reference -- Draft, on `main`, attached to releases from v1.3.0 |
 | ML07 | HTTPD (httpd) and its modules | planned; HTTPREXX and HTTPLUA from ML07-0003 |
 | ML08 | mvsMF (mvsmf) | ML08-0001 User's Guide, ML08-0002 Reference -- Draft, on `main`, attached to releases from v1.4.0 |
-| ML09 | OFTPD (oftpd) | ML09-0001 User's Guide, ML09-0002 Reference -- Draft, on `main` |
+| ML09 | OFTPD (oftpd) | ML09-0001 User's Guide, ML09-0002 Reference -- Draft, on `main`, attached to releases from v1.0.0 |
 | ML10 | PL1C/370 (pl1c370) | ML10-0001 Programmer's Guide, ML10-0002 Language Reference -- in preparation |
 
 A book title uses the product name; file names, commands and URLs keep the
