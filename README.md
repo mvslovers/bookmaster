@@ -194,7 +194,7 @@ row gets an area when its first book starts: add the row here first.
 | ML03 | BREXX/370 (brexx370) | ML03-0001 User's Guide, ML03-0002 Reference, ML03-0003 Library and Samples -- Draft, on `master` |
 | ML04 | REKS/370 (rexx370, to be renamed reks370) | planned |
 | ML05 | UFSD (ufsd) | ML05-0001 User's Guide, ML05-0002 Reference -- Draft, on `main`, attached to releases from v1.5.0 |
-| ML06 | FTPD (ftpd) | ML06-0001 User's Guide, ML06-0002 Reference -- Draft, on `main`, attached to releases from v1.3.0 |
+| ML06 | FTPD (ftpd) | ML06-0001 User's Guide, ML06-0002 Reference -- First Edition (October 2026), on `main`, attached to releases from v1.3.0 |
 | ML07 | HTTPD (httpd) and its modules | ML07-0001 User's Guide, ML07-0002 Reference -- Draft, on `main`, attached to releases from v4.5.0; HTTPREXX and HTTPLUA from ML07-0003 |
 | ML08 | mvsMF (mvsmf) | ML08-0001 User's Guide, ML08-0002 Reference -- Draft, on `main`, attached to releases from v1.4.0 |
 | ML09 | OFTPD (oftpd) | ML09-0001 User's Guide, ML09-0002 Reference -- Draft, on `main`, attached to releases from v1.0.0 |
