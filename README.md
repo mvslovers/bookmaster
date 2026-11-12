@@ -199,6 +199,7 @@ row gets an area when its first book starts: add the row here first.
 | ML08 | mvsMF (mvsmf) | ML08-0001 User's Guide, ML08-0002 Reference -- First Edition (October 2026), on `main`, attached to releases from v1.4.0 |
 | ML09 | OFTPD (oftpd) | ML09-0001 User's Guide, ML09-0002 Reference -- Draft, on `main`, attached to releases from v1.0.0 |
 | ML10 | PL1C/370 (pl1c370) | ML10-0001 Programmer's Guide, ML10-0002 Language Reference -- in preparation |
+| ML11 | SDSF (sdsf) | ML11-0001 User's Guide, ML11-0002 Reference -- Draft, on `main` |
 
 A book title uses the product name; file names, commands and URLs keep the
 repo name.
